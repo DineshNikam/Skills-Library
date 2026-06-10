@@ -1,0 +1,1054 @@
+# UNITY PREFAB REFACTORING TOOL V2
+## IMPLEMENTATION-GRADE PRODUCT SPECIFICATION
+
+---
+
+# PRODUCT NAME
+
+Prefab Refactoring Tool
+
+---
+
+# PRODUCT GOAL
+
+Create a Unity-native bulk prefab editing system that allows designers and programmers to:
+
+- Search across prefabs
+- Build reusable visual queries
+- Locate GameObjects
+- Locate Components
+- Locate Serialized Properties
+- Preview modifications
+- Execute safe bulk modifications
+- Save reusable query assets
+- Save reusable operation pipelines
+
+The experience should feel like:
+
+- Unity Search
+- Prefab Override Inspector
+- Bulk Refactoring Tool
+- Visual Query Builder
+
+NOT like:
+- Spreadsheet editor
+- Database tool
+- Custom external application
+
+Everything must feel native to Unity.
+
+---
+
+# PRIMARY DESIGN PRINCIPLES
+
+## Principle 1
+
+Search First
+
+Everything starts with search.
+
+Users think:
+
+"I need every button"
+
+NOT
+
+"I need to write a query."
+
+---
+
+## Principle 2
+
+Preview Before Apply
+
+Nothing modifies assets directly.
+
+Every change must appear in preview.
+
+---
+
+## Principle 3
+
+Composable Workflows
+
+Search and operations are separate.
+
+Search finds targets.
+
+Operations modify targets.
+
+---
+
+## Principle 4
+
+Reusable Knowledge
+
+Queries become assets.
+
+Pipelines become assets.
+
+Teams should build libraries of reusable rules.
+
+---
+
+# MAIN WINDOW LAYOUT
+
+Use a 4 region dockable window.
+
+---------------------------------------------------------
+| Toolbar                                                |
+---------------------------------------------------------
+| Scope | Query Builder | Results + Preview             |
+| Panel | Panel         | Panel                         |
+|       |               |                               |
+---------------------------------------------------------
+| Operation Pipeline                                |
+---------------------------------------------------------
+| Validation | Execution Log                         |
+---------------------------------------------------------
+
+Resizable split views.
+
+Persist splitter positions.
+
+Persist layout.
+
+---
+
+# TOOLBAR
+
+Height:
+32px
+
+Contains:
+
+[Scan]
+
+[Stop]
+
+[Preview]
+
+[Apply]
+
+[Apply Selected]
+
+[Dry Run]
+
+[Backup Before Apply]
+
+--------------------------------
+
+Search Box
+
+--------------------------------
+
+Result Counter
+
+Example:
+
+100 Prefabs
+321 Objects
+1204 Properties
+
+--------------------------------
+
+Settings Dropdown
+
+--------------------------------
+
+Help Button
+
+---
+
+# LEFT PANEL
+# PREFAB SCOPE
+
+Inspired by:
+Unity Search scope selector
+
+Width:
+250-350px
+
+Contains:
+
+--------------------------------
+Selected Scope
+--------------------------------
+
+Prefab Count
+
+Folder Count
+
+Query Source Count
+
+--------------------------------
+Sources
+--------------------------------
+
+Drag Prefabs Here
+
+Drag Folders Here
+
+Drag Search Results Here
+
+--------------------------------
+Scope Tree
+--------------------------------
+
+Assets/
+
+UI/
+
+Popups/
+
+Buttons/
+
+---
+
+Context Menu
+
+Add Folder
+
+Add Prefabs
+
+Remove
+
+Clear
+
+Refresh
+
+---
+
+# QUERY BUILDER PANEL
+
+MOST IMPORTANT PANEL
+
+Inspired by:
+Unity Search pins
+
+Each rule becomes a chip.
+
+Example:
+
+[Name Contains Button]
+
+[Has Component Image]
+
+[Image.Color = White]
+
+Each chip:
+
+- Editable
+- Draggable
+- Enable/Disable
+- Delete
+
+---
+
+# QUERY VISUALIZATION
+
+Example:
+
+GROUP (AND)
+
+[Name Contains Button]
+
+[Has Component Button]
+
+[Image.Color = White]
+
+--------------------------------
+
+GROUP (OR)
+
+[Tag = UI]
+
+[Layer = UI]
+
+--------------------------------
+
+NOT
+
+[Inactive]
+
+---
+
+Nested groups supported.
+
+Visual indentation.
+
+Visual connectors.
+
+Avoid node graph systems.
+
+Use hierarchy layout.
+
+---
+
+# QUERY CHIP DESIGN
+
+Example:
+
+┌─────────────────────┐
+│ Name Contains Button │
+└─────────────────────┘
+
+States:
+
+Default
+
+Hover
+
+Selected
+
+Error
+
+Disabled
+
+---
+
+Right Click
+
+Edit
+
+Duplicate
+
+Disable
+
+Delete
+
+Convert To Group
+
+Save As Asset
+
+---
+
+# QUERY CREATION MENU
+
++ Add Condition
+
+Categories:
+
+GameObject
+
+Component
+
+Property
+
+Collection
+
+Query Reference
+
+---
+
+# QUERY ASSET PANEL
+
+Below Query Builder
+
+Saved Queries
+
+Example:
+
+Common Buttons
+
+Popup Buttons
+
+Reward Buttons
+
+Localization Targets
+
+---
+
+Drag Query Asset into Builder
+
+Creates Reference Node
+
+---
+
+# RESULTS PANEL
+
+Use TreeView
+
+Three levels
+
+Prefab
+
+GameObject
+
+Property
+
+Example
+
+Popup_DailyReward
+
+Header
+
+CloseButton
+
+Button.interactable
+
+Image.color
+
+---
+
+Columns
+
+Name
+
+Type
+
+Match Source
+
+Operation Count
+
+Status
+
+---
+
+Filtering
+
+Only Modified
+
+Only Errors
+
+Only Warnings
+
+Only Selected
+
+---
+
+# PREVIEW PANEL
+
+MOST IMPORTANT PANEL
+
+Inspired directly by:
+
+Unity Prefab Override Inspector
+
+NOT side-by-side diff.
+
+Inspector-style diff.
+
+---
+
+Preview Example
+
+Button.interactable
+
+Current:
+True
+
+New:
+False
+
+Source:
+Disable Buttons Operation
+
+--------------------------------
+
+Image.color
+
+Current:
+White
+
+New:
+Green
+
+Source:
+Theme Migration
+
+--------------------------------
+
+GameObject.Name
+
+Current:
+PlayButton
+
+New:
+Btn_Play
+
+Source:
+Rename Operation
+
+---
+
+Each row includes:
+
+Checkbox
+
+Property
+
+Current
+
+New
+
+Operation Source
+
+Apply Button
+
+---
+
+Grouping
+
+Prefab
+
+GameObject
+
+Component
+
+Property
+
+---
+
+Apply Levels
+
+Property
+
+Component
+
+GameObject
+
+Prefab
+
+Global
+
+---
+
+# OPERATION PIPELINE PANEL
+
+Height:
+250-350px
+
+Inspired by:
+Shader Graph Blackboard
++
+Build Pipeline
+
+Pipeline Example
+
+Find Buttons
+
+↓
+
+Add Analytics Component
+
+↓
+
+Set Tracking Id
+
+↓
+
+Rename Object
+
+↓
+
+Disable Legacy Component
+
+---
+
+Pipeline Step Card
+
+Contains:
+
+Icon
+
+Name
+
+Summary
+
+Enabled
+
+Validation Status
+
+Expand
+
+Delete
+
+Duplicate
+
+---
+
+Drag Reorder
+
+Supported
+
+---
+
+# OPERATION CREATION MENU
+
+Categories
+
+GameObject
+
+Component
+
+Property
+
+Custom
+
+---
+
+# GAMEOBJECT OPERATIONS
+
+Add Child
+
+Add Parent
+
+Rename
+
+Delete
+
+Duplicate
+
+Set Active
+
+Set Layer
+
+Set Tag
+
+Reparent
+
+Move Sibling
+
+---
+
+# COMPONENT OPERATIONS
+
+Add Component
+
+Remove Component
+
+Replace Component
+
+Reset Component
+
+Copy Values
+
+Paste Values
+
+---
+
+# PROPERTY OPERATIONS
+
+Set Value
+
+Replace Value
+
+Clear Value
+
+Increment
+
+Multiply
+
+Copy Value
+
+Map Value
+
+---
+
+# EXPRESSION OPERATIONS
+
+Examples
+
+Health = Health + 10
+
+Width = Width + 100
+
+FontSize *= 1.2
+
+Damage *= 1.1
+
+---
+
+# CROSS COMPONENT MAPPING
+
+Example
+
+Image.color
+
+→
+
+SpriteRenderer.color
+
+Example
+
+TMP_Text.text
+
+→
+
+LocalizationKey.key
+
+---
+
+# VALIDATION PANEL
+
+Always visible.
+
+Contains:
+
+Errors
+
+Warnings
+
+Information
+
+---
+
+Validation Categories
+
+Missing Components
+
+Broken References
+
+Missing Scripts
+
+Nested Prefab Risk
+
+Circular References
+
+Invalid Queries
+
+Operation Conflicts
+
+---
+
+# EXECUTION LOG PANEL
+
+Shows
+
+Scan Started
+
+Scan Complete
+
+Preview Generated
+
+Apply Started
+
+Apply Complete
+
+Undo Registered
+
+Errors
+
+Warnings
+
+---
+
+# DATA MODEL
+
+Core Models
+
+SearchScope
+
+QueryDefinition
+
+QueryGroup
+
+QueryCondition
+
+SearchResult
+
+PrefabResult
+
+ObjectResult
+
+PropertyResult
+
+OperationPipeline
+
+OperationStep
+
+PreviewDiff
+
+ValidationReport
+
+ExecutionReport
+
+ApplyTransaction
+
+---
+
+# SERIALIZATION
+
+Use ScriptableObjects
+
+Query Asset
+
+Pipeline Asset
+
+Operation Preset Asset
+
+Search Preset Asset
+
+---
+
+# ARCHITECTURE
+
+Modules
+
+Core
+
+UI
+
+Query
+
+Scanner
+
+Preview
+
+Operations
+
+Validation
+
+Execution
+
+Persistence
+
+Caching
+
+---
+
+# FOLDER STRUCTURE
+
+Editor
+
+ ├── Core
+ ├── UI
+ │    ├── Windows
+ │    ├── Panels
+ │    ├── Elements
+ │    ├── Styles
+ │
+ ├── Query
+ │    ├── Nodes
+ │    ├── Providers
+ │    ├── Assets
+ │
+ ├── Scanner
+ │
+ ├── Preview
+ │
+ ├── Operations
+ │    ├── GameObject
+ │    ├── Component
+ │    ├── Property
+ │
+ ├── Validation
+ │
+ ├── Execution
+ │
+ ├── Persistence
+ │
+ └── Cache
+
+---
+
+# ASMDEF STRUCTURE
+
+PrefabRefactor.Core
+
+PrefabRefactor.Query
+
+PrefabRefactor.Scanner
+
+PrefabRefactor.Operations
+
+PrefabRefactor.Validation
+
+PrefabRefactor.Preview
+
+PrefabRefactor.UI
+
+PrefabRefactor.Editor
+
+---
+
+# PERFORMANCE STRATEGY
+
+Target
+
+100+ Prefabs
+
+1000+ Objects
+
+10000+ Properties
+
+---
+
+Optimization
+
+Lazy Loading
+
+Incremental Scan
+
+Property Caching
+
+Result Caching
+
+GUID Based Tracking
+
+Batch Asset Saves
+
+Single Refresh Pass
+
+Cancellation Tokens
+
+Background Processing
+
+Progress API
+
+---
+
+# SCANNING STRATEGY
+
+Phase 1
+
+Collect prefab GUIDs
+
+Phase 2
+
+Build scan cache
+
+Phase 3
+
+Evaluate query tree
+
+Phase 4
+
+Generate matches
+
+Phase 5
+
+Generate preview
+
+Phase 6
+
+Generate validation
+
+---
+
+# EXECUTION STRATEGY
+
+ApplyTransaction
+
+↓
+
+Backup
+
+↓
+
+Undo Registration
+
+↓
+
+Execute Operations
+
+↓
+
+Generate Diff
+
+↓
+
+Save Prefabs
+
+↓
+
+Asset Refresh
+
+↓
+
+Final Report
+
+---
+
+# MVP PHASES
+
+PHASE 1
+
+Basic Search
+
+Name Search
+
+Component Search
+
+Result Tree
+
+---
+
+PHASE 2
+
+Property Search
+
+SerializedProperty Search
+
+Query Assets
+
+---
+
+PHASE 3
+
+Operation Pipeline
+
+Property Editing
+
+Preview Diff
+
+---
+
+PHASE 4
+
+Selective Apply
+
+Undo
+
+Validation
+
+---
+
+PHASE 5
+
+Query Composition
+
+Pipeline Assets
+
+Caching
+
+---
+
+PHASE 6
+
+Advanced Expressions
+
+Cross Component Mapping
+
+Performance Optimization
+
+---
+
+# FUTURE V3 FEATURES
+
+Command Line Support
+
+CI/CD Integration
+
+MCP Integration
+
+Headless Execution
+
+Query DSL
+
+Team Query Library
+
+Query Marketplace
+
+Remote Validation
+
+AI Query Generation
+
+Natural Language Search
+
+Example:
+
+"Find all disabled buttons in popup prefabs and rename them"
+
+which generates a visual query automatically.
